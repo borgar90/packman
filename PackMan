@@ -1,0 +1,105 @@
+package com.example.packman;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+class PacmanSpill extends JPanel implements KeyListener {
+    private int pacmanX = 50;
+    private int pacmanY = 50;
+    private int pacmanRadius = 20;
+    private int dx = 0; // Pacmans bevegelse i x-retning
+    private int dy = 0; // Pacmans bevegelse i y-retning
+
+    public PacmanSpill() {
+        JFrame ramme = new JFrame("Pacman Spill");
+        ramme.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ramme.setSize(600, 400);
+        ramme.getContentPane().add(this);
+        ramme.setVisible(true);
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+        this.addKeyListener(this);
+
+        // Start spill-løkken
+        spillLøkke();
+    }
+
+    private void spillLøkke() {
+        while (true) {
+            // Oppdater spilltilstanden
+            oppdaterSpillTilstand();
+
+            // Tegn skjermen på nytt
+            repaint();
+
+            // Legg til en kort forsinkelse for å bremse ned spillet
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void oppdaterSpillTilstand() {
+        // Flytt Pacman
+        pacmanX += dx;
+        pacmanY += dy;
+
+        // Hold Pacman innenfor grensene
+        if (pacmanX < 0) pacmanX = 0;
+        if (pacmanY < 0) pacmanY = 0;
+        if (pacmanX > getWidth()) pacmanX = getWidth();
+        if (pacmanY > getHeight()) pacmanY = getHeight();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        tegnPacman(g);
+    }
+
+    private void tegnPacman(Graphics g) {
+        g.setColor(Color.YELLOW);
+        g.fillArc(pacmanX - pacmanRadius, pacmanY - pacmanRadius,
+                2 * pacmanRadius, 2 * pacmanRadius, 45, 270);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        // Sett Pacmans bevegelsesretning basert på tastetrykket
+        switch (keyCode) {
+            case KeyEvent.VK_W:
+                dy = -5;
+                dx = 0;
+                break;
+            case KeyEvent.VK_S:
+                dy = 5;
+                dx = 0;
+                break;
+            case KeyEvent.VK_A:
+                dx = -5;
+                dy = 0;
+                break;
+            case KeyEvent.VK_D:
+                dx = 5;
+                dy = 0;
+                break;
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    public static void main(String[] args) {
+        new PacmanSpill();
+    }
+}
