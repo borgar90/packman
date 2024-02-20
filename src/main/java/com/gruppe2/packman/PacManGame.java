@@ -4,8 +4,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class PacManGame extends Application {
 
     public static void main (String[] args) {
@@ -15,8 +13,11 @@ public class PacManGame extends Application {
     @Override
     public void start( Stage primaryStage ) {
         try {
-            GameBoard gameBoard = new GameBoard("/level1.txt");
-            Scene scene = new Scene(gameBoard, 1000, 600);
+            GameManager gameManager = new GameManager();
+            gameManager.startGame();
+            Scene scene = new Scene(gameManager.getGameUI(), 1000, 600);
+            scene.setOnKeyPressed(event -> gameManager.handleKeyPress(event.getCode()));
+            scene.setOnKeyReleased(event -> gameManager.handleKeyRelease(event.getCode()));
             primaryStage.setTitle("Pac-man Game");
             primaryStage.setScene(scene);
             primaryStage.show();

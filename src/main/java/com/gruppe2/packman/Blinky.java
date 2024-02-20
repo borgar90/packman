@@ -9,7 +9,5 @@ public class Blinky extends Ghost {
 
     @Override
     public void chase() {
-
     }
-    // Blinky's specific strategies
 }
