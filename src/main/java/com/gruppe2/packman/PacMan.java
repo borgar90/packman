@@ -1,8 +1,12 @@
 package com.gruppe2.packman;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import javafx.util.Duration;
 
 
 /*
@@ -19,21 +23,68 @@ public class PacMan extends GameCharacter {
     private double y;
     private int speed = 10;
     private Arc pacManShape;
-
-
-
+    private boolean energizerActive;
+    private int lives = 3;
 
     public PacMan(double x, double y) {
         this.x = x;
         this.y = y;
+        initPacmanShape();
+    }
+
+    public PacMan(double x, double y, int radius){
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        initPacmanShape();
+    }
+
+    private void initPacmanShape(){
         this.pacManShape = new Arc(this.getX(), this.getY(),  this.getRadius(), this.getRadius(), 45, 270);
         this.pacManShape.setType(ArcType.ROUND);
         this.pacManShape.setFill(Color.YELLOW);
+        this.pacManShape.setStroke(Color.BLACK);
     }
+
+    public void loseLife(){
+        lives -= 1;
+    }
+
+    public int getLives(){
+        return lives;
+    }
+    public void setEnergizerActive(){
+        energizerActive = true;
+        pacManShape.setFill(Color.ORANGE);
+        PauseTransition waitBeforeBlinking = new PauseTransition(Duration.seconds(3.5));
+
+        waitBeforeBlinking.setOnFinished(event -> {
+
+            Timeline blinkTimeline = new Timeline(
+                    new KeyFrame(Duration.seconds(0.15), evt -> pacManShape.setFill(pacManShape.getFill() == Color.ORANGE ? Color.YELLOW : Color.ORANGE)),
+                    new KeyFrame(Duration.seconds(0.3))
+            );
+
+            blinkTimeline.setCycleCount(Timeline.INDEFINITE);
+
+            PauseTransition stopBlinking = new PauseTransition(Duration.seconds(1.5));
+            stopBlinking.setOnFinished(evt -> {
+                blinkTimeline.stop();
+                energizerActive = false;
+                pacManShape.setFill(Color.YELLOW);
+            });
+            stopBlinking.play();
+            blinkTimeline.play();
+        });
+        waitBeforeBlinking.play();
+    }
+
+
 
     public Arc getShape() {
         return pacManShape;
     }
+
     //Flytter på pacman
     public void move(double dx, double dy) {
         this.x = dx;

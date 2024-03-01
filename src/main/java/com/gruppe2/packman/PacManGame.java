@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class PacManGame extends Application {
-
+    public static Stage primaryStage;
     public static void main (String[] args) {
         launch(args);
     }
@@ -13,6 +13,7 @@ public class PacManGame extends Application {
     @Override
     public void start( Stage primaryStage ) {
         try {
+            this.primaryStage = primaryStage;
             GameManager gameManager = new GameManager();
             gameManager.startGame();
             Scene scene = new Scene(gameManager.getGameUI(), 1000, 600);
@@ -24,6 +25,9 @@ public class PacManGame extends Application {
         }catch (Exception ex){
             System.out.println(ex);
         }
+    }
 
+    public static Stage getPrimaryStage() {
+        return primaryStage;
     }
 }
