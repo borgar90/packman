@@ -1,5 +1,6 @@
 package com.gruppe2.packman;
 
+import com.gruppe2.ghost.Flee;
 import com.gruppe2.ghost.Ghost;
 import com.gruppe2.ghost.GhostAI;
 import javafx.animation.AnimationTimer;
@@ -30,6 +31,7 @@ public class GameManager {
     private GhostAI ghostAI;
     private int lives = 3;
     private long lastUpdate = 0;
+    private Flee flee;
 
     public GameManager(){
         setupGameLoop();
@@ -56,6 +58,7 @@ public class GameManager {
     }
 
 
+
     private void nextLevel(){
         GameBoard nextLevel = gameUI.newGameBoard("/level2.txt");
         gameUI.setGameBoard(nextLevel);
@@ -74,7 +77,7 @@ public class GameManager {
 
             // Create a label for the message
             Label messageLabel = new Label("GAME OVER - Points" + points);
-            messageLabel.setTextFill(Color.GREEN); // Set text color to green
+            messageLabel.setTextFill(Color.GREEN);
 
             // Create a StackPane as the root for the scene
             StackPane root = new StackPane(messageLabel);
@@ -116,6 +119,7 @@ public class GameManager {
         // wall detection
         if (!gameUI.getGameBoard().willCollide(nextX, nextY)) {
             pacMan.move(nextX, nextY); // Flytter pacman bare hvis det er godkjent move.
+            gameUI.getGameBoard().teleportPacMan(nextX, nextY);
             Tablet consumedTablet = gameUI.getGameBoard().willEatTablet(pacMan.getShape().getCenterX(), pacMan.getShape().getCenterY());
             if (consumedTablet != null) { // dot er blitt spist
                 if(consumedTablet instanceof EnergyTablet){
@@ -141,7 +145,7 @@ public class GameManager {
 
     }
 
-    private void addPoint(int point){
+    public void addPoint(int point){
         points += point;
     }
 
@@ -154,6 +158,10 @@ public class GameManager {
                 updateGame(now);
             }
         };
+    }
+
+    private void flee(){
+        flee.fleeFromPacman();
     }
 
 
@@ -169,7 +177,12 @@ public class GameManager {
         // Convert 'now' from nanoseconds to milliseconds for easier comparison
         if (lastUpdate == 0 || (now - lastUpdate) / 1_000_000 > 30) { // More than 500 ms since last chase
             for(Ghost ghost:gameUI.gameBoard.getGhostList()){
-                ghost.chase();
+                if(!pacMan.getActive()){
+                    ghost.setSpeed(4);
+                    ghost.chase();
+                }else{
+                    ghost.flee();
+                }
             }
             lastUpdate = now; // Update the last chase time
         }

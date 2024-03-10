@@ -29,7 +29,13 @@ public class MoveAgressive implements Move {
         // Check for openings in three possible directions from where Pac-Man is
 
         if (canMoveInDirection(currentDirection)) {
-            moveInDirection(currentDirection);
+            List<Direction> optionalDirection = getPossibleDirections();
+            if(!optionalDirection.isEmpty()){
+                Direction chosenDirection = chooseBestDirection(optionalDirection);
+                moveInDirection(chosenDirection);
+            }else {
+                moveInDirection(currentDirection);
+            }
         } else{
             List<Direction> possibleDirections = getPossibleDirections();
             if(!possibleDirections.isEmpty()) {
@@ -44,7 +50,6 @@ public class MoveAgressive implements Move {
     private List<Direction> getPossibleDirections() {
         List<Direction> directions = new ArrayList<>();
         for (Direction dir : Direction.values()) {
-            System.out.println(dir);
             if (dir != currentDirection.getOpposite() && canMoveInDirection(dir)) {
                 System.out.println("canMove");
                 directions.add(dir);
@@ -53,11 +58,27 @@ public class MoveAgressive implements Move {
         return directions;
     }
 
+    private List<Direction> getPossibleDirectionsNotCurrent() {
+        List<Direction> directions = new ArrayList<>();
+        for (Direction dir : Direction.values()) {
+            System.out.println(dir);
+            if (dir != currentDirection.getOpposite() && canMoveInDirection(dir) && dir != currentDirection) {
+                System.out.println("canMove");
+                directions.add(dir);
+            }
+        }
+        return directions;
+    }
+
+
     private boolean canMoveInDirection(Direction direction) {
         double nextX = ghost.ghostShape.getX() + direction.getDeltaX() * ghost.getSpeed();
         double nextY = ghost.ghostShape.getY() + direction.getDeltaY() * ghost.getSpeed();
         return !gameBoard.ghostWillCollide(nextX, nextY, ghost);
     }
+
+
+
 
     private void moveInDirection(Direction direction) {
         double moveX = direction.getDeltaX() * ghost.getSpeed();
@@ -107,6 +128,7 @@ public class MoveAgressive implements Move {
                 minDistance = distanceToPacMan;
                 bestDirection = dir;
             }
+
         }
 
         return bestDirection;
@@ -115,6 +137,8 @@ public class MoveAgressive implements Move {
     private double calculateDistance(double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
+
+
 
 
 

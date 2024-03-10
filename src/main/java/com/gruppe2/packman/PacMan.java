@@ -1,5 +1,6 @@
 package com.gruppe2.packman;
 
+import com.gruppe2.ghost.Ghost;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
@@ -7,6 +8,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /*
@@ -25,17 +29,23 @@ public class PacMan extends GameCharacter {
     private Arc pacManShape;
     private boolean energizerActive;
     private int lives = 3;
+    private GameBoard gm;
 
-    public PacMan(double x, double y) {
+    private List<Ghost> ghosts;
+
+    public PacMan(double x, double y, GameBoard gm) {
         this.x = x;
         this.y = y;
+        this.gm = gm;
         initPacmanShape();
+
     }
 
-    public PacMan(double x, double y, int radius){
+    public PacMan(double x, double y, int radius, GameBoard gm){
         this.x = x;
         this.y = y;
         this.radius = radius;
+        this.gm = gm;
         initPacmanShape();
     }
 
@@ -56,6 +66,13 @@ public class PacMan extends GameCharacter {
     public void setEnergizerActive(){
         energizerActive = true;
         pacManShape.setFill(Color.ORANGE);
+        ghosts = gm.getGhostList();
+
+        for ( Ghost ghost : ghosts) {
+            ghost.flee();
+        }
+
+
         PauseTransition waitBeforeBlinking = new PauseTransition(Duration.seconds(3.5));
 
         waitBeforeBlinking.setOnFinished(event -> {
@@ -72,6 +89,9 @@ public class PacMan extends GameCharacter {
                 blinkTimeline.stop();
                 energizerActive = false;
                 pacManShape.setFill(Color.YELLOW);
+                for (Ghost ghost : ghosts) {
+                    ghost.stopFleeing();
+                }
             });
             stopBlinking.play();
             blinkTimeline.play();
@@ -91,6 +111,7 @@ public class PacMan extends GameCharacter {
         this.y = dy;
         pacManShape.setCenterX(x);
         pacManShape.setCenterY(y);
+        gm.willEatGhost();
     }
 
     public void updatePosition() {
@@ -123,5 +144,9 @@ public class PacMan extends GameCharacter {
     }
     public int getSpeed(){
         return speed;
+    }
+
+    public boolean getActive(){
+        return energizerActive;
     }
 }
