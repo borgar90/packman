@@ -26,16 +26,19 @@ public class GameUI extends VBox{
     GameManager gameManager;
     GameBoard gameBoard;
     private Label points;
-    private Paint scoreColor = Color.BLUE;
 
+    private int pointsInt;
+    private Paint scoreColor = Color.BLUE;
+    private HBox pacmansHBox;
 
     public GameUI(GameManager gameManager){
         this.gameManager = gameManager;
-        this.gameBoard = new GameBoard("/level1.txt", gameManager);
+        this.gameBoard = new GameBoard("/level3.txt", gameManager);
         this.setFocusTraversable(true);
         this.requestFocus();
         this.setOnKeyPressed(this::handleKeyPressed);
         this.getChildren().add(gameBoard);
+        this.pointsInt = 0;
         gui();
     }
 
@@ -50,25 +53,22 @@ public class GameUI extends VBox{
         VBox lives = new VBox();
         Label label = new Label("Lives:");
         lives.getChildren().add(label);
-        HBox pacmans = new HBox();
+        pacmansHBox = new HBox();
+
         for(int i = gameBoard.getPacMan().getLives(); i > 0; i--){
-            PacMan pacMan = new PacMan(5,0, 15);
-            pacmans.getChildren().add(pacMan.getShape());
+            PacMan pacMan = new PacMan(5,0, 15, gameBoard);
+            pacmansHBox.getChildren().add(pacMan.getShape());
         }
-        lives.getChildren().add(pacmans);
+
+        lives.getChildren().add(pacmansHBox);
         hbox.getChildren().add(lives);
         this.getChildren().add(hbox);
 
     }
 
     public void removePacMan() {
-        // Retrieve the VBox containing Pac-Man images
-        HBox lives = (HBox) ((VBox) ((HBox) this.getChildren().get(1)).getChildren().get(1)).getChildren().get(1);
-
-        // Remove the last Pac-Man image (assuming it's at index 1)
-        int numPacMen = lives.getChildren().size();
-        if (numPacMen > 0) {
-            lives.getChildren().remove(numPacMen - 1);
+        if (pacmansHBox != null && pacmansHBox.getChildren().size() > 0) {
+            pacmansHBox.getChildren().remove(pacmansHBox.getChildren().size() - 1); // Remove the last Pac-Man life
         }
     }
 
@@ -116,6 +116,7 @@ public class GameUI extends VBox{
         points.setText(pointUpdate);
         this.getChildren().add(points);
     }
+
 
     private void handleKeyPressed(KeyEvent event) {
         gameManager.handleKeyPress(event.getCode());

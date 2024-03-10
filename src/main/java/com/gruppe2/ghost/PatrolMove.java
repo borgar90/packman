@@ -30,7 +30,6 @@ public class PatrolMove implements Move{
         } else {
             Node nextStep = patrolPath.get(currentPathIndex);
             ghost.move(nextStep.getX(), nextStep.getY());
-
             currentPathIndex = (currentPathIndex + 1) % patrolPath.size();
         }
     }

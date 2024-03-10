@@ -14,7 +14,7 @@ public class Blinky extends Ghost {
     private MoveAgressive chaseAgressive;
 
     public Blinky( double x, double y, Image ghost, PacMan pacMan, GameBoard gameBoard, GameManager gm ) {
-        super(x, y, ghost, gameBoard, 5, gm);
+        super(x, y, ghost, gameBoard, 3, gm);
         this.pacMan = pacMan;
         this.chaseAgressive = new MoveAgressive(this, pacMan, gameBoard);
     }
@@ -27,7 +27,11 @@ public class Blinky extends Ghost {
         }else {
             chaseAgressive.move();
         }
-        checkCollide();
+    }
+
+    @Override
+    public void stopFleeing() {
+        chaseAgressive.move();
     }
 
     private boolean lineOfSightToPacMan() {

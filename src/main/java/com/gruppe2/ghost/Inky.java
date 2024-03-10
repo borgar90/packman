@@ -11,13 +11,12 @@ import java.util.List;
 
 public class Inky extends Ghost {
 
-    private PatrolMove patrolMove;
+    private MoveAgressive moveAgressive;
 
     public Inky( double x, double y, Image ghost, GameBoard gameBoard, GameManager gm ) {
-        super(x, y, ghost, gameBoard, 6, gm);
-        List<Node> patrolPath = new ArrayList<>();
-        patrolPath = setPatrolPath();
-        patrolMove = new PatrolMove(this, gameBoard.getPacMan(), gameBoard, patrolPath);
+        super(x, y, ghost, gameBoard, 4, gm);
+
+        moveAgressive = new MoveAgressive(this, gameBoard.getPacMan(), gameBoard);
     }
 
     private List<Node> setPatrolPath(){
@@ -36,6 +35,11 @@ public class Inky extends Ghost {
     }
     @Override
     public void chase() {
-        patrolMove.move();
+        moveAgressive.move();
+    }
+
+    @Override
+    public void stopFleeing() {
+        moveAgressive.move();
     }
 }
