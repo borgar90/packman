@@ -20,6 +20,7 @@ public class MoveHoming implements Move{
         this.pacMan = pacMan;
         this.gameBoard = gameBoard;
         this.ghostAI = new GhostAI();
+        this.currentPath = new Node((int) ghost.getX(), (int) ghost.getY());
     }
 
     @Override
@@ -80,7 +81,7 @@ public class MoveHoming implements Move{
 
             for (Node neighbor : getNeighbors(currentNode)) {
 
-                if (closedSet.contains(neighbor) || gameBoard.hasWall(neighbor.getX(), neighbor.getY())) continue;
+                if (closedSet.contains(neighbor) || ghost.gm.hasWall(neighbor.getX(), neighbor.getY())) continue;
                 double tentativeG = currentNode.getG() + estimateDistance(currentNode, neighbor);
                 if (!openSet.contains(neighbor) || tentativeG < neighbor.getG()) {
                     neighbor.setParent(currentNode);
@@ -120,14 +121,14 @@ public class MoveHoming implements Move{
 
     private boolean isClearPathVertical(int x, int startY, int endY, GameBoard gameBoard) {
         for (int y = startY; y <= endY; y++) {
-            if (gameBoard.hasWall(x, y)) return false;
+            if (ghost.gm.hasWall(x, y)) return false;
         }
         return true;
     }
 
     private boolean isClearPathHorizontal(int y, int startX, int endX, GameBoard gameBoard) {
         for (int x = startX; x <= endX; x++) {
-            if (gameBoard.hasWall(x, y)) return false;
+            if (ghost.gm.hasWall(x, y)) return false;
         }
         return true;
     }
@@ -191,7 +192,7 @@ public class MoveHoming implements Move{
             int newX = node.getX() + directLineOfSight[0];
             int newY = node.getY() + directLineOfSight[1];
             // Check if the new position is valid and there are no walls directly in the path.
-            if (isValidPosition(newX, newY) && !gameBoard.hasWall(newX, newY)) {
+            if (isValidPosition(newX, newY) && !ghost.gm.hasWall(newX, newY)) {
                 neighbors.add(new Node(newX, newY));
             }
 
@@ -203,10 +204,10 @@ public class MoveHoming implements Move{
 
                 // Adjust the collision check based on movement direction
                 boolean wallCollision = switch (offset[0] + "," + offset[1]) {
-                    case "0,1" -> gameBoard.hasWall(newX, newY + ghost.getShape().getFitHeight()); // Down
-                    case "0,-1" -> gameBoard.hasWall(newX, newY); // Up
-                    case "-1,0" -> gameBoard.hasWall(newX, newY); // Left
-                    case "1,0" -> gameBoard.hasWall(newX + ghost.getShape().getFitWidth(), newY); // Right
+                    case "0,1" -> ghost.gm.hasWall(newX, newY + ghost.getShape().getFitHeight()); // Down
+                    case "0,-1" -> ghost.gm.hasWall(newX, newY); // Up
+                    case "-1,0" -> ghost.gm.hasWall(newX, newY); // Left
+                    case "1,0" -> ghost.gm.hasWall(newX + ghost.getShape().getFitWidth(), newY); // Right
                     default -> false;
                 };
 
@@ -226,7 +227,7 @@ public class MoveHoming implements Move{
         int newY = node.getY() + dy;
 
 
-        if (isValidPosition(newX, newY) && !gameBoard.hasWall(newX, newY)) {
+        if (isValidPosition(newX, newY) && !ghost.gm.hasWall(newX, newY)) {
             neighbors.add(new Node(newX, newY));
         }
     }
@@ -238,7 +239,7 @@ public class MoveHoming implements Move{
             int minY = Math.min((int)ghost.getY(), (int)pacMan.getY());
             int maxY = Math.max((int)ghost.getY(), (int)pacMan.getY());
             for (int y = minY; y <= maxY; y++) {
-                if (gameBoard.hasWall(ghost.getX(), y)) {
+                if (ghost.gm.hasWall(ghost.getX(), y)) {
                     return false; // Wall is blocking the view
                 }
             }
@@ -249,7 +250,7 @@ public class MoveHoming implements Move{
             int minX = Math.min((int)ghost.getX(), (int)pacMan.getX());
             int maxX = Math.max((int)ghost.getX(), (int)pacMan.getX());
             for (int x = minX; x <= maxX; x++) {
-                if (gameBoard.hasWall(x, ghost.getY())) {
+                if (ghost.gm.hasWall(x, ghost.getY())) {
                     return false; // Wall is blocking the view
                 }
             }

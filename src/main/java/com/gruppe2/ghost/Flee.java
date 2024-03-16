@@ -48,7 +48,7 @@ public class Flee {
 
     private boolean isClearPathVertical(int x, int startY, int endY, GameBoard gameBoard) {
         for (int y = startY; y <= endY; y++) {
-            if (gameBoard.hasWall(x, y)) return false;
+            if (ghost.gm.hasWall(x, y)) return false;
         }
         return true;
     }
@@ -76,7 +76,7 @@ public class Flee {
 
     private boolean isClearPathHorizontal(int y, int startX, int endX, GameBoard gameBoard) {
         for (int x = startX; x <= endX; x++) {
-            if (gameBoard.hasWall(x, y)) return false;
+            if (ghost.gm.hasWall(x, y)) return false;
         }
         return true;
     }
@@ -90,7 +90,7 @@ public class Flee {
             int newX = node.getX() + directLineOfSight[0];
             int newY = node.getY() + directLineOfSight[1];
             // Check if the new position is valid and there are no walls directly in the path.
-            if (isValidPosition(newX, newY) && !gb.hasWall(newX, newY)) {
+            if (isValidPosition(newX, newY) && !ghost.gm.hasWall(newX, newY)) {
                 neighbors.add(new Node(newX, newY));
             }
 
@@ -102,10 +102,10 @@ public class Flee {
 
                 // Adjust the collision check based on movement direction
                 boolean wallCollision = switch (offset[0] + "," + offset[1]) {
-                    case "0,1" -> gb.hasWall(newX, newY + ghost.getShape().getFitHeight()); // Down
-                    case "0,-1" -> gb.hasWall(newX, newY); // Up
-                    case "-1,0" -> gb.hasWall(newX, newY); // Left
-                    case "1,0" -> gb.hasWall(newX + ghost.getShape().getFitWidth(), newY); // Right
+                    case "0,1" -> ghost.gm.hasWall(newX, newY + ghost.getShape().getFitHeight()); // Down
+                    case "0,-1" -> ghost.gm.hasWall(newX, newY); // Up
+                    case "-1,0" -> ghost.gm.hasWall(newX, newY); // Left
+                    case "1,0" -> ghost.gm.hasWall(newX + ghost.getShape().getFitWidth(), newY); // Right
                     default -> false;
                 };
 

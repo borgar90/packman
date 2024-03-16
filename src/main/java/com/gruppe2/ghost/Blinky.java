@@ -49,7 +49,7 @@ public class Blinky extends Ghost {
                 int direction = (int) Math.signum(maxY - minY);
 
                 for (int checkY = minY; direction > 0 ? checkY <= maxY : checkY >= minY; checkY += direction) {
-                    if (gameBoard.hasWall(this.x, checkY)) {
+                    if (this.gm.hasWall(this.x, checkY)) {
                         System.out.println("WALL");
                         return false; // Wall found between the ghost and Pac-Man, LOS blocked
                     }
@@ -65,7 +65,7 @@ public class Blinky extends Ghost {
                 int direction = (int) Math.signum(maxX - minX);
 
                 for (int checkY = minX; direction > 0 ? checkY <= maxX : checkY >= minX; checkY += direction) {
-                    if (checkY != this.x && gameBoard.hasWall(checkY, this.y)) {
+                    if (checkY != this.x && this.gm.hasWall(checkY, this.y)) {
                         return false;
                     }
                 }
@@ -94,7 +94,7 @@ public class Blinky extends Ghost {
                 double checkX = this.x;
                 double checkY = this.y;
                 for (int i = 0; i <= steps; i++) {
-                    if (gameBoard.hasWall((int) checkX, (int) checkY)) {
+                    if (this.gm.hasWall((int) checkX, (int) checkY)) {
                         return false; // Wall found, LOS blocked
                     }
                     checkX += stepX;
@@ -120,14 +120,14 @@ public class Blinky extends Ghost {
             double moveY = (deltaX / distance) * getSpeed();
 
             // Attempt diagonal movement only if both directions are clear
-            if (!gameBoard.ghostWillCollide(this.x + moveX, this.y + moveY, this)) {
+            if (!this.gm.ghostWillCollide(this.x + moveX, this.y + moveY, this)) {
                 this.x += moveX;
                 this.y += moveY;
             } else {
                 // Try horizontal movement if direct path is blocked
-                if (!gameBoard.ghostWillCollide(this.x + moveX, this.y, this)) {
+                if (!this.gm.ghostWillCollide(this.x + moveX, this.y, this)) {
                     this.x += moveX;
-                } else if (!gameBoard.ghostWillCollide(this.x, this.y + moveY, this)) {
+                } else if (!this.gm.ghostWillCollide(this.x, this.y + moveY, this)) {
                     // Try vertical movement if horizontal is blocked
                     this.y += moveY;
                 } else {
@@ -165,7 +165,7 @@ public class Blinky extends Ghost {
     private void chooseNewTargetIfNeeded(int width, int height) {
         int tileSize = (int) gameBoard.getTilesize();
 
-        if (wanderTargetX == -1 || (Math.abs(this.x - wanderTargetX) < getSpeed() && Math.abs(this.y - wanderTargetY) < getSpeed()) || gameBoard.willCollide(wanderTargetX, wanderTargetY)) {
+        if (wanderTargetX == -1 || (Math.abs(this.x - wanderTargetX) < getSpeed() && Math.abs(this.y - wanderTargetY) < getSpeed()) || gm.willCollide(wanderTargetX, wanderTargetY)) {
             wanderTargetX = rand.nextInt(width / tileSize) * tileSize + tileSize / 2.0;
             wanderTargetY = rand.nextInt(height / tileSize) * tileSize + tileSize / 2.0;
         }
@@ -175,8 +175,8 @@ public class Blinky extends Ghost {
         double nextX = this.x + moveX;
         double nextY = this.y + moveY;
 
-        boolean canMoveX = !gameBoard.willCollide(nextX + (moveX > 0 ? width : -width), this.y);
-        boolean canMoveY = !gameBoard.willCollide(this.x, nextY + (moveY > 0 ? height : -height));
+        boolean canMoveX = !this.gm.willCollide(nextX + (moveX > 0 ? width : -width), this.y);
+        boolean canMoveY = !this.gm.willCollide(this.x, nextY + (moveY > 0 ? height : -height));
 
         // Prioritize movement based on which axis has a greater delta, or implement other logic
         if (Math.abs(moveX) > Math.abs(moveY)) {
