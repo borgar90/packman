@@ -29,24 +29,25 @@ public class PacMan extends GameCharacter {
     private Arc pacManShape;
     private boolean energizerActive;
     private int lives = 3;
-    private GameBoard gm;
-
     private List<Ghost> ghosts;
 
-    public PacMan(double x, double y, GameBoard gm) {
+    public PacMan(double x, double y, GameManager gm) {
         this.x = x;
         this.y = y;
         this.gm = gm;
         initPacmanShape();
-
     }
 
-    public PacMan(double x, double y, int radius, GameBoard gm){
+    public PacMan(double x, double y, int radius, GameManager gm){
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.gm = gm;
         initPacmanShape();
+    }
+
+    public void resetLives(){
+        lives = 3;
     }
 
     private void initPacmanShape(){
@@ -66,13 +67,7 @@ public class PacMan extends GameCharacter {
     public void setEnergizerActive(){
         energizerActive = true;
         pacManShape.setFill(Color.ORANGE);
-        ghosts = gm.getGhostList();
-
-        for ( Ghost ghost : ghosts) {
-            ghost.flee();
-        }
-
-
+        gm.setGhostFlee();
         PauseTransition waitBeforeBlinking = new PauseTransition(Duration.seconds(3.5));
 
         waitBeforeBlinking.setOnFinished(event -> {
@@ -89,9 +84,7 @@ public class PacMan extends GameCharacter {
                 blinkTimeline.stop();
                 energizerActive = false;
                 pacManShape.setFill(Color.YELLOW);
-                for (Ghost ghost : ghosts) {
-                    ghost.stopFleeing();
-                }
+                gm.setGhostFlee();
             });
             stopBlinking.play();
             blinkTimeline.play();
@@ -111,7 +104,6 @@ public class PacMan extends GameCharacter {
         this.y = dy;
         pacManShape.setCenterX(x);
         pacManShape.setCenterY(y);
-        gm.willEatGhost();
     }
 
     public void updatePosition() {

@@ -74,7 +74,7 @@ public class MoveAgressive implements Move {
     private boolean canMoveInDirection(Direction direction) {
         double nextX = ghost.ghostShape.getX() + direction.getDeltaX() * ghost.getSpeed();
         double nextY = ghost.ghostShape.getY() + direction.getDeltaY() * ghost.getSpeed();
-        return !gameBoard.ghostWillCollide(nextX, nextY, ghost);
+        return ! ghost.gm.ghostWillCollide(nextX, nextY, ghost);
     }
 
 

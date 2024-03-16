@@ -1,19 +1,18 @@
-package com.gruppe2.packman;
+package com.gruppe2.map;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class Tablet {
-    private double x;
-    private double y;
+public class Tablet extends MapObject {
+
     private double radius;
     private boolean isConsumed;
     private Color color;
     private Circle shape;
     private int points;
     public Tablet( double x, double y, double radius, Color color, int points ){
-       this.x = x;
-       this.y = y;
+        super(x, y);
+
        this.radius = radius;
        this.color = color;
        this.shape = new Circle(x, y, radius);

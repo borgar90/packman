@@ -13,7 +13,7 @@ public class GhostAI {
         int x = 5;
         int y = 5;
     }
-
+    /*
     public void ghostMove( List<Ghost> ghosts ){
         for(Ghost ghost : ghosts){
             ghost.chase();
@@ -54,7 +54,7 @@ public class GhostAI {
                 ghostY += moveY;
             } else {
                 // Try horizontal movement if direct path is blocked
-                if (!gameBoard.ghostWillCollide(ghostX + moveX, ghostY, ghost)) {
+                if (!this.gm.ghostWillCollide(ghostX + moveX, ghostY, ghost)) {
                     ghostX += moveX;
                 } else if (!gameBoard.ghostWillCollide(ghostX, ghostY + moveY, ghost)) {
                     // Try vertical movement if horizontal is blocked
@@ -68,6 +68,9 @@ public class GhostAI {
             ghost.move(ghostX , ghostY);
         }
     }
+
+
+
     public void handleBeingStuck(GameBoard gameBoard, Ghost ghost) {
         // Simple strategy: turn around by inverting direction
         double newTargetX = ghost.getX() - (wanderTargetX - ghost.getX());
@@ -76,4 +79,5 @@ public class GhostAI {
         wanderTargetX = Math.max(0, Math.min(newTargetX, gameBoard.getWidth() - ghost.ghostShape.getFitWidth() * 2));
         wanderTargetY = Math.max(0, Math.min(newTargetY, gameBoard.getHeight() - ghost.ghostShape.getFitHeight() * 2));
     }
+     */
 }

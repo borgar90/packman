@@ -20,7 +20,7 @@ public abstract class Ghost extends GameCharacter {
     private double speed;
     private double initialX;
     private double initialY;
-    private GameManager gm;
+    protected GameManager gm;
     private Flee flee;
 
     public Ghost( double x, double y, Image ghost, GameBoard gameBoard, double speed, GameManager gm ) {
@@ -48,7 +48,7 @@ public abstract class Ghost extends GameCharacter {
         return ghostShape;
     }
     public void move(double dx, double dy) {
-        if(!gameBoard.ghostWillCollide(dx, dy, this) ){
+        if(!this.gm.ghostWillCollide(dx, dy, this) ){
             x = dx;
             y = dy;
             ghostShape.setX(x);
@@ -87,7 +87,7 @@ public abstract class Ghost extends GameCharacter {
         double distance = Math.sqrt(Math.pow(x - pacManX, 2) + Math.pow(y - pacManY, 2));
 
         double collisionThreshold = gameBoard.getPacMan().getRadius() + 2;
-        if (distance < collisionThreshold) {
+        if (gm.willEatGhost()) {
             gameBoard.getPacMan().loseLife();
             gm.getGameUI().removePacMan();
             resetPosition();
