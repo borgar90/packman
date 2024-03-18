@@ -21,7 +21,7 @@ public class MongoUtil {
 
 
             if ( mongoClient == null ) {
-                String connectionString = "mongodb+srv://borgar90:SpgbPnjI3854bY7P@pacman.lho0i3i.mongodb.net/";
+                String connectionString = "add_connetion_string_here";
                 ServerApi serverApi = ServerApi.builder()
                         .version(ServerApiVersion.V1)
                         .build();
