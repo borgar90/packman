@@ -1,0 +1,36 @@
+Forfattere: Borgar Flaen Stensrud & Erik-Tobias Huseby Ellefsen
+
+Gruppe: 2
+
+Pacman 2024
+
+Oppgave I OBJ2100 1 Obj.orientert prog 2 24V Bø
+
+Forfattere av dette programmet er ikke ansvarlig for eventuelle skader
+som kan oppstå fra bruk av dette programmet.
+Dette programmet er gitt "som det er" uten garantier av noen slag,
+enten uttrykt eller underforstått, inkl men ikke begrenset til garantier
+av salgbarhet, egnethet for et bestemt formål og ikke-krenkelse.
+Forfattere av dette programmet er ikke ansvarlig for eventuelle skader
+som kan oppstå fra bruk av dette programmet.
+
+Dette programmet er en kloning av det klassiske spillet Pacman.
+Spillet er laget i Java og er en del
+av et prosjekt.
+
+Det er noen kjente buggs i spillet. Disse er:
+- Spillet kan lagge litt i hvisse lommer og spesielt på høyre side av brettet.
+- Spøkelsene sliter veldig med flee, spesielt etter reset av spillet, etter game over.
+- Spøkelsene sliter med å finne veien til pacman etter reset etter game over, da
+går de ofte bare til startposisjonen til pacman, og følger nødvendigvis ikke etter pac.
+samme gjelder når man trykker på Restart i toppmeny.
+- Generering av tilfeldige brett blev vi ikke ferdige med, det var alt for mye arbeid.
+- High score listen fungerer bare til en viss grad,
+det blir fort for mange high scores og det blir vanskelig å se hvem som har den beste scoren,
+fordi vi ikke har implementert noen form for scroll funksjon i high score listen.
+
+Avlevert: 18.03.2024
+
+Sluttkommentar: Vi er fornøyd med resultat, det har vært et enormt lærerikt og morsomt prosjekt.
+Vi har lært mye om objektorientert programmering og samarbeid. Vi har også lært mye om kordinatsystemer,
+grafikk og mye mer. Vi har også lært mye om hvordan vi kan bruke git og github til å samarbeide på en god måte.

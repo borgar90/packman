@@ -1,11 +1,17 @@
-package com.gruppe2.ghost;
+package com.gruppe2.gameCharacters.ghost;
 
-import com.gruppe2.packman.GameBoard;
-import com.gruppe2.packman.Node;
-import com.gruppe2.packman.PacMan;
+import com.gruppe2.map.GameBoard;
+import com.gruppe2.utils.Node;
+import com.gruppe2.gameCharacters.pacman.PacMan;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * @Author Borgar Flaen Stensrud, Erik-Tobias Huseby Ellefsen
+ * @usage begynelsen på en patrulje bevegelse for spøkelser
+ * ikke ferdig implementert
+ */
 
 public class PatrolMove implements Move{
     private Ghost ghost;
@@ -19,7 +25,7 @@ public class PatrolMove implements Move{
         this.ghost = ghost;
         this.pacMan = pacMan;
         this.gameBoard = gameBoard;
-        this.patrolPath = new ArrayList<>(patrolPath); // Assuming patrolPath is predefined
+        this.patrolPath = new ArrayList<>(patrolPath);
     }
 
     @Override

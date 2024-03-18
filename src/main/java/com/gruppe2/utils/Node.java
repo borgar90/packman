@@ -1,14 +1,20 @@
-package com.gruppe2.packman;
+package com.gruppe2.utils;
 
 import java.util.Objects;
+/**
+ * Node class for A* algorithm
+ *  @Author: Borgar Flaen Stensrud, Erik-Tobias Huseby Ellefsen
+ *  @Usage; Brukes i A* algorytmen for å lage noder for stifinning
+ **/
+
 
 public class Node {
     private int x;
     private int y;
-    private double f; // total cost
-    private double g; // cost from start to current node
-    private double h; // heuristic cost (estimated cost from current node to target node)
-    private Node parent; // parent node in the path
+    private double f; // totalt kostnadd
+    private double g; // konstnadd fra start til nåværende node
+    private double h; // beregnet kostnadd fra nåværende node to mål node)
+    private Node parent; // foreldre node i path
 
     public Node(int x, int y) {
         this.x = x;

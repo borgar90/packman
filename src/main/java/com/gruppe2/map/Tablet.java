@@ -2,7 +2,11 @@ package com.gruppe2.map;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-
+/**
+ * @Author: Borgar Flaen Stensrud, Erik-Tobias Huseby Ellefsen
+ * @Usage: Dette er en klasse som representerer en tablet. Den arver fra MapObject-klassen.
+ * En tablet er en sirkel som kan konsumeres av spilleren for å øke poengsummen.
+ */
 public class Tablet extends MapObject {
 
     private double radius;
@@ -12,7 +16,6 @@ public class Tablet extends MapObject {
     private int points;
     public Tablet( double x, double y, double radius, Color color, int points ){
         super(x, y);
-
        this.radius = radius;
        this.color = color;
        this.shape = new Circle(x, y, radius);
@@ -24,16 +27,8 @@ public class Tablet extends MapObject {
         return points;
     }
 
-
-    public boolean isConsumed(){
-        return isConsumed;
-    }
-
     public Circle getShape(){
         return shape;
     }
-
-
-
 
 }

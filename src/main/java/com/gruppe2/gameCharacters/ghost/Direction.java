@@ -1,4 +1,13 @@
-package com.gruppe2.ghost;
+package com.gruppe2.gameCharacters.ghost;
+
+/**
+ * Enum for retninger.
+ * @Author Borgar Flaen Stensrud, Erik-Tobias Huseby Ellefsen
+ * @method getDeltaX() returnerer x-koordinaten for retningen.
+ * @method getDeltaY() returnerer y-koordinaten for retningen.
+ * @method getOpposite() returnerer motsatt retning.
+ */
+
 public enum Direction {
     UP(0, -1),
     RIGHT(1, 0),

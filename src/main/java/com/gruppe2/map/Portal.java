@@ -1,9 +1,11 @@
 package com.gruppe2.map;
 
-import com.gruppe2.packman.GameCharacter;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
+/**
+ * @Author: Borgar Flaen Stensrud, Erik-Tobias Huseby Ellefsen
+ * @Usage: Dette er en klasse som representerer en portal. Den arver fra MapObject-klassen.
+ */
 public class Portal extends MapObject{
 
     private double tileSize;
@@ -24,12 +26,16 @@ public class Portal extends MapObject{
         portalShape.setFill(Color.LIGHTGREEN);
     }
 
+
+    /**
+     * Metode for å sette portalens form.
+     */
     private void setPortalShape(){
         double portalX;
         double portalY;
 
-        if(this.getX()+tileSize*2 == boardWidth){
-            portalX = boardWidth - width - tileSize;
+        if(this.getX()+tileSize == boardWidth){
+            portalX = boardWidth -width;
         }else{
             portalX = this.getX();
         }
