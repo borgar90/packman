@@ -1,5 +1,10 @@
 package com.gruppe2.map;
-
+/**
+ * @Author: Borgar Flaen Stensrud, Erik-Tobias Huseby Ellefsen
+ * @Usage: Dette er en klasse som representerer et objekt på kartet.
+ * Denne klassen er en superklasse for alle objekter på kartet.
+ * Denne klassen inneholder x- og y-koordinater.
+ */
 public class MapObject {
 
     private double x;

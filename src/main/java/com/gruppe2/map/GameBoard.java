@@ -1,17 +1,11 @@
-package com.gruppe2.packman;
+package com.gruppe2.map;
 
-import com.gruppe2.ghost.*;
-import com.gruppe2.map.*;
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
+import com.gruppe2.gameCharacters.ghost.*;
+import com.gruppe2.gameCharacters.pacman.PacMan;
+import com.gruppe2.utils.GameManager;
+import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -19,8 +13,8 @@ import java.util.List;
 
 
 /*
-Author: Borgar Flaen Stensrud
-Usage: Lager gameboard til skjermen. Klasse for å tegne det grafiske på spillet. Tegner pacman, vegger og dotter. samt energizers.
+Author: Borgar Flaen Stensrud, Erik-Tobias Huseby Ellefsen
+Usage: Lager gameboard til skjermen. Klasse for å tegne det grafiske på spillet. Tegner pacman, spøkelser, vegger og dotter. samt energizers.
  */
 
 public class GameBoard extends Pane {
@@ -31,10 +25,16 @@ public class GameBoard extends Pane {
     private List<EnergyTablet> energyTablets = new ArrayList<>();
     private List<SmallTablet> smallTablets = new ArrayList<>();
     private List<Tablet> tablets = new ArrayList<>();
-    private Ghost blinky;
     private GameManager gm;
     private List<Ghost> ghosts;
     private List<Portal> portals;
+
+    /**
+     * Oppretter et nytt GameBoard med angitt bane og GameManager.
+     *
+     * @param levelPath banefilen som skal lastes inn.
+     * @param gm        GameManager-objektet som er knyttet til spillet.
+     */
 
     public GameBoard(String levelPath, GameManager gm){
         this.gm = gm;
@@ -45,6 +45,7 @@ public class GameBoard extends Pane {
         loadLevel(levelPath);
         addPortals();
         addGhosts();
+
     }
 
     private void addGhosts(){
@@ -56,15 +57,20 @@ public class GameBoard extends Pane {
     public List<Tablet> getTablets(){
         return tablets;
     }
+
     // Laster level basert på tekstfil
     private void loadLevel(String levelPath){
-        try ( InputStream is = getClass().getResourceAsStream(levelPath);
-             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+        String path = "src/main/resources/" + levelPath;
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             int y = 0;
             String line;
             while((line =  br.readLine()) != null){
                 for(int x = 0; x < line.length(); x++){
                     char c = line.charAt(x);
+                    double startLocationX = x * tileSize + tileSize  / 2.0;
+                    double startLocationY = y * tileSize + tileSize / 2.0;
+                    Point2D startLocation = new Point2D(startLocationX, startLocationY);
+
                     switch(c){
                         case '#':
                             Wall wall = new Wall(x*tileSize, y*tileSize, tileSize, tileSize);
@@ -84,30 +90,37 @@ public class GameBoard extends Pane {
                             this.getChildren().add(energyTablet.getShape());
                             break;
                         case 'P':
-                            pacMan.move(x * tileSize + tileSize  / 2.0, y * tileSize + tileSize / 2.0);
+                            pacMan.setStartLocation(startLocation);
+                            pacMan.setPosistion(startLocationX,startLocationY);
                             this.getChildren().add(pacMan.getShape());
                             break;
                         case 'B':
-                            Image ghostBlinky = new Image(getClass().getResourceAsStream("/blinky.png"));
-                            blinky = new Blinky(x * tileSize + tileSize / 2.0, y * tileSize + tileSize / 2.0, ghostBlinky, pacMan, this, gm);
+                            Blinky blinky;
+                            blinky = new Blinky(startLocationX, startLocationY,  gm);
+                            blinky.setStartLocation(startLocation);
+                            blinky.setMoveType(new MoveAgressive(blinky, pacMan, this));
+                            blinky.setPacMan(pacMan);
                             ghosts.add(blinky);
                             break;
                         case 'p':
-                            Image ghostPinky = new Image(getClass().getResourceAsStream("/pinky.png"));
                             Pinky pinky;
-                            pinky = new Pinky(x * tileSize + tileSize / 2.0, y * tileSize + tileSize / 2.0, ghostPinky, this, gm);
+                            pinky = new Pinky(startLocationX, startLocationY,  gm);
+                            pinky.setStartLocation(startLocation);
                             ghosts.add(pinky);
+                            pinky.setMoveType(new MoveAgressive(pinky, pacMan, this));
                             break;
                         case 'I':
-                            Image ghostInky = new Image(getClass().getResourceAsStream("/inky.png"));
                             Inky inky;
-                            inky = new Inky(x * tileSize + tileSize / 2.0, y * tileSize + tileSize / 2.0, ghostInky, this, gm);
+                            inky = new Inky(startLocationX,  startLocationY, gm);
+                            inky.setStartLocation(startLocation);
+                            inky.setMoveType(new MoveAgressive(inky, pacMan, this));
                             ghosts.add(inky);
                             break;
                         case 'C':
-                            Image ghostClyde = new Image(getClass().getResourceAsStream("/clyde.png"));
                             Clyde clyde;
-                            clyde = new Clyde(x * tileSize + tileSize / 2.0, y * tileSize + tileSize / 2.0, ghostClyde, this, gm);
+                            clyde = new Clyde(startLocationX, startLocationY,  gm);
+                            clyde.setStartLocation(startLocation);
+                            clyde.setMoveType(new MoveHoming(clyde, pacMan));
                             ghosts.add(clyde);
                             break;
                         case '*':
@@ -123,6 +136,26 @@ public class GameBoard extends Pane {
         }
     }
 
+
+    // Legger til portaler på brettet
+    public void addPortals(){
+        for(Portal portal:portals){
+            this.getChildren().add(portal.getPortalShape());
+        }
+    }
+
+    // fjerner tablet fra GameBoard, brukes ved kollisjon mellom pac og tablet,
+    // pac får poeng i gameManager-classen og her blir tablet fjernes fra brettet
+    public void removeTablet(Tablet tablet){
+        this.getChildren().remove(tablet.getShape());
+        this.tablets.remove(tablet);
+        dots.remove(tablet);
+    }
+
+
+
+    //* Getters *//
+
     public List<Ghost> getGhostList(){
         return ghosts;
     }
@@ -137,30 +170,9 @@ public class GameBoard extends Pane {
     public List<Portal> getPortals(){
         return portals;
     }
-
-    public void addPortals(){
-        for(Portal portal:portals){
-            this.getChildren().add(portal.getPortalShape());
-        }
-    }
-
-    //fjerner tablet fra GameBoard
-    public void removeTablet(Tablet tablet){
-        this.getChildren().remove(tablet.getShape());
-        this.tablets.remove(tablet);
-        dots.remove(tablet); // Assuming 'dots' is a List<Circle> of all dot objects
-    }
-
-    public Ghost getBlinky(){
-        return blinky;
-    }
-
-
     //returnerer pacman
     public PacMan getPacMan(){
         return pacMan;
     }
-
-
 
 }
